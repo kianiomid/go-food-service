@@ -2,11 +2,13 @@ App:
   Port: 8090
 
 Database:
-  Host: "127.0.0.1"
-  Port: 3306
-  Username: "root"
-  Password: "admin"
-  DBName: "food-service"
+  DB_Connection: "mysql"
+  DB_Host: "127.0.0.1"
+  DB_Port: 3306
+  DB_Name: "food-service"
+  DB_Username: "root"
+  DB_Password: "admin"
+  DB_TIMEZONE: "Asia/Tehran"
 
 Files:
   Path: "./files"

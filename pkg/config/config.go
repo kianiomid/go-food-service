@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-func getConfig() {
+func GetConfig() {
 	viper.SetConfigName("App")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./configurations")

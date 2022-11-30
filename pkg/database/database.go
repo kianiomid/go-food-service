@@ -6,12 +6,13 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/spf13/viper"
+	//"gorm.io/gorm"
 )
 
 func InitDB() (*gorm.DB, error) {
 	dbConnection := viper.GetString("Database.DB_Connection")
 	dbHost := viper.GetString("Database.DB_Host")
-	dbPort := viper.GetString("Database.DB_Port")
+	dbPort := viper.GetInt("Database.DB_Port")
 	dbName := viper.GetString("Database.DB_Name")
 	dbUsername := viper.GetString("Database.DB_Username")
 	dbPassword := viper.GetString("Database.DB_Password")
@@ -20,6 +21,10 @@ func InitDB() (*gorm.DB, error) {
 	if dbConnection == "mysql" {
 		dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s", dbUsername, dbPassword, dbHost, dbPort, dbName)
 		db, err := gorm.Open("mysql", dsn)
+
+		//dsn := "root:admin@tcp(172.17.0.4:3306)/food-service?charset=utf8mb4&parseTime=True&loc=Local"
+		//db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+
 		if err != nil {
 			return nil, err
 		}

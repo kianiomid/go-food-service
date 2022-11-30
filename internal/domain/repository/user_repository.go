@@ -36,7 +36,7 @@ func (userRepository *UserRepository) SaveUser(user *entity.User) (*entity.User,
 	return user, nil
 }
 
-func (userRepository *UserRepository) FindUserById(id int) (*entity.User, error) {
+func (userRepository *UserRepository) FindUserById(id int64) (*entity.User, error) {
 	var user entity.User
 	err := userRepository.db.Where("id = ?", id).Take(&user).Error
 	if err != nil {
@@ -45,7 +45,7 @@ func (userRepository *UserRepository) FindUserById(id int) (*entity.User, error)
 	return &user, nil
 }
 
-func (userRepository *UserRepository) GetUserNameById(id int) string {
+func (userRepository *UserRepository) GetUserNameById(id int64) string {
 	userDetail, _ := userRepository.FindUserById(id)
 	var fullname = fmt.Sprintf("%s %s", userDetail.FirstName, userDetail.LastName)
 	return fullname

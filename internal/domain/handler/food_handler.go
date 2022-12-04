@@ -150,7 +150,7 @@ func (foodHandler *FoodHandler) DeleteById(c *gin.Context) {
 		return
 	}
 
-	err = foodHandler.foodService.DeleteFoodByIdById(id)
+	err = foodHandler.foodService.DeleteFoodById(id)
 	if err != nil {
 		response.ResponseError(c, err.Error(), http.StatusBadRequest)
 		return

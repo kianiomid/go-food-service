@@ -7,8 +7,8 @@ import (
 )
 
 type FoodService struct {
-	foodRepository repository.FoodRepository
-	userRepository repository.UserRepository
+	foodRepository repository.IFoodRepository
+	userRepository repository.IUserRepository
 }
 
 type IFoodService interface {
@@ -16,10 +16,10 @@ type IFoodService interface {
 	FindFoodById(int) (*dto.FoodDetailViewModel, error)
 	GetAllFood() ([]dto.FoodDetailViewModel, error)
 	UpdateFood(*dto.FoodViewModel) (*dto.FoodViewModel, error)
-	DeleteFoodByIdById(int) error
+	DeleteFoodById(int) error
 }
 
-func NewFoodService(foodRepository repository.FoodRepository, userRepository repository.UserRepository) *FoodService {
+func NewFoodService(foodRepository repository.IFoodRepository, userRepository repository.IUserRepository) *FoodService {
 	//return &FoodService{foodRepository: foodRepository, userRepository: userRepository}
 	var foodService = FoodService{}
 	foodService.foodRepository = foodRepository
@@ -80,6 +80,7 @@ func (foodService *FoodService) GetAllFood() ([]dto.FoodDetailViewModel, error) 
 		for _, item := range result {
 			foodVM := dto.FoodDetailViewModel{
 				UserName:    foodService.userRepository.GetUserNameById(item.UserID),
+				ID:          item.ID,
 				Title:       item.Title,
 				FoodImage:   item.FoodImage,
 				Description: item.Description,

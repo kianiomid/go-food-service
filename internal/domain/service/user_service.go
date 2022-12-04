@@ -38,7 +38,7 @@ func (userService *UserService) GetAllUser() (*[]dto.UserResponseDTO, error) {
 	var users []dto.UserResponseDTO
 	for _, item := range result {
 		var user dto.UserResponseDTO
-		user.Email = item.Email
+		user.ID = item.ID
 		user.FullName = fmt.Sprintf("%s %s", item.FirstName, item.LastName)
 		user.Email = item.Email
 		users = append(users, user)

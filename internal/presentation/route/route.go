@@ -20,11 +20,11 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 	user := router.Group("/v1/user")
 	{
 		user.GET("/", middleware.CORSMiddleware(), userHandler.GetAllUser)
-		user.GET("/:id", middleware.CORSMiddleware(), middleware.AuthMiddleware(), userHandler.FindUserById)
-		user.POST("", middleware.CORSMiddleware(), middleware.AuthMiddleware(), userHandler.RegisterUser)
-		user.PUT("/:id", middleware.CORSMiddleware(), middleware.AuthMiddleware(), userHandler.UpdateUser)
-		user.DELETE("/:id", middleware.CORSMiddleware(), middleware.AuthMiddleware(), userHandler.DeleteUserById)
-		user.POST("/login", middleware.CORSMiddleware(), middleware.AuthMiddleware(), userHandler.Login)
+		user.POST("/register", middleware.CORSMiddleware(), userHandler.RegisterUser)
+		user.GET("/:id" /*middleware.AuthMiddleware(),*/, middleware.CORSMiddleware(), userHandler.FindUserById)
+		user.PUT("/:id", middleware.CORSMiddleware(), userHandler.UpdateUser)
+		user.DELETE("/:id", middleware.CORSMiddleware(), userHandler.DeleteUserById)
+		user.POST("/login", middleware.CORSMiddleware(), userHandler.Login)
 	}
 
 	//FoodHandler
@@ -34,11 +34,11 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 
 	food := router.Group("/v1/food")
 	{
-		food.GET("/", middleware.CORSMiddleware(), middleware.AuthMiddleware(), foodHandler.GetAllFood)
-		food.GET("/:id", middleware.CORSMiddleware(), middleware.AuthMiddleware(), foodHandler.FindFoodById)
-		food.POST("", middleware.CORSMiddleware(), middleware.AuthMiddleware(), foodHandler.SaveFood)
-		food.PUT("/:id", middleware.CORSMiddleware(), middleware.AuthMiddleware(), foodHandler.UpdateFood)
-		food.DELETE("/:id", middleware.CORSMiddleware(), middleware.AuthMiddleware(), foodHandler.DeleteById)
+		food.GET("/", middleware.CORSMiddleware() /*middleware.AuthMiddleware(),*/, foodHandler.GetAllFood)
+		food.POST("/", middleware.CORSMiddleware() /*middleware.AuthMiddleware(),*/, foodHandler.SaveFood)
+		food.GET("/:id", middleware.CORSMiddleware() /*middleware.AuthMiddleware(),*/, foodHandler.FindFoodById)
+		food.PUT("/:id", middleware.CORSMiddleware() /*middleware.AuthMiddleware(),*/, foodHandler.UpdateFood)
+		food.DELETE("/:id", middleware.CORSMiddleware() /*middleware.AuthMiddleware(),*/, foodHandler.DeleteById)
 	}
 
 	return router

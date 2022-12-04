@@ -1,6 +1,7 @@
 package dto
 
 type FoodDetailViewModel struct {
+	ID          int    `json:"id"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 	FoodImage   string `json:"food_image"`

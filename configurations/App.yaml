@@ -3,7 +3,7 @@ App:
 
 Database:
   DB_Connection: "mysql"
-  DB_Host: "172.17.0.4"
+  DB_Host: "172.17.0.5"
   DB_Port: 3306
   DB_Name: "food-service"
   DB_Username: "root"

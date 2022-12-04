@@ -61,7 +61,7 @@ func (userHandler *UserHandler) GetAllUser(c *gin.Context) {
 	response.ResponseOkWithData(c, result)
 }
 
-func (userHandler *UserHandler) GetDetailUser(c *gin.Context) {
+func (userHandler *UserHandler) FindUserById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.ResponseError(c, err.Error(), http.StatusBadRequest)
@@ -117,7 +117,7 @@ func (userHandler *UserHandler) UpdateUser(c *gin.Context) {
 	response.ResponseOkWithData(c, result)
 }
 
-func (userHandler *UserHandler) DeleteUser(c *gin.Context) {
+func (userHandler *UserHandler) DeleteUserById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		response.ResponseError(c, errors.New("invalid User ID").Error(), http.StatusBadRequest)

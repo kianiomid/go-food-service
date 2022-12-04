@@ -14,7 +14,7 @@ type UserService struct {
 }
 
 type IUserService interface {
-	SaveUser(model *dto.RegisterViewModel) (*dto.UserViewModel, error)
+	SaveUser(model *dto.RegisterViewModel) (*dto.UserResponseDTO, error)
 	GetAllUser() (*[]dto.UserResponseDTO, error)
 	FindUserById(id int) (*dto.UserResponseDTO, error)
 	UpdateUser(userViewModel *dto.UserViewModel) (*dto.UserResponseDTO, error)

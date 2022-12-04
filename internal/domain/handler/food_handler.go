@@ -50,7 +50,7 @@ func (foodHandler *FoodHandler) SaveFood(c *gin.Context) {
 	}
 
 	var foodViewModelDTO = dto.FoodViewModel{
-		UserID:      userId,
+		UserID:      int(userId),
 		Title:       title,
 		Description: description,
 		FoodImage:   filename,
@@ -120,8 +120,8 @@ func (foodHandler *FoodHandler) UpdateFood(c *gin.Context) {
 	}
 
 	var foodViewModelDTO = dto.FoodViewModel{
-		ID:          int64(id),
-		UserID:      int64(userId),
+		ID:          id,
+		UserID:      userId,
 		Title:       title,
 		Description: description,
 		FoodImage:   filename,

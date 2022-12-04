@@ -15,9 +15,9 @@ type UserService struct {
 
 type IUserService interface {
 	SaveUser(model *dto.RegisterViewModel) (*dto.UserViewModel, error)
-	GetAllUser() (*[]dto.UserViewModel, error)
-	FindUserById(id int) (*dto.UserViewModel, error)
-	UpdateUser(userViewModel *entity.User) (*dto.UserViewModel, error)
+	GetAllUser() (*[]dto.UserResponseDTO, error)
+	FindUserById(id int) (*dto.UserResponseDTO, error)
+	UpdateUser(userViewModel *dto.UserViewModel) (*dto.UserResponseDTO, error)
 	DeleteUserById(id int) error
 	GetUserByEmailPassword(loginViewModel dto.LoginViewModel) (*entity.User, error)
 }
@@ -29,15 +29,15 @@ func NewUserService(userRepository repository.IUserRepository) *UserService {
 	return &userService
 }
 
-func (userService *UserService) GetAllUser() (*[]dto.UserViewModel, error) {
+func (userService *UserService) GetAllUser() (*[]dto.UserResponseDTO, error) {
 	result, err := userService.userRepository.GetAllUser()
 	if err != nil {
 		return nil, err
 	}
 
-	var users []dto.UserViewModel
+	var users []dto.UserResponseDTO
 	for _, item := range result {
-		var user dto.UserViewModel
+		var user dto.UserResponseDTO
 		user.Email = item.Email
 		user.FullName = fmt.Sprintf("%s %s", item.FirstName, item.LastName)
 		user.Email = item.Email
@@ -46,15 +46,15 @@ func (userService *UserService) GetAllUser() (*[]dto.UserViewModel, error) {
 	return &users, nil
 }
 
-func (userService *UserService) FindUserById(id int) (*dto.UserViewModel, error) {
-	var viewModel dto.UserViewModel
+func (userService *UserService) FindUserById(id int) (*dto.UserResponseDTO, error) {
+	var viewModel dto.UserResponseDTO
 	result, err := userService.userRepository.FindUserById(id)
 	if err != nil {
 		return nil, err
 	}
 
 	if result != nil {
-		viewModel = dto.UserViewModel{
+		viewModel = dto.UserResponseDTO{
 			ID:       result.ID,
 			FullName: fmt.Sprintf("%s %s", result.FirstName, result.LastName),
 			Email:    result.Email,
@@ -63,7 +63,7 @@ func (userService *UserService) FindUserById(id int) (*dto.UserViewModel, error)
 	return &viewModel, nil
 }
 
-func (userService *UserService) SaveUser(registerViewModel *dto.RegisterViewModel) (*dto.UserViewModel, error) {
+func (userService *UserService) SaveUser(registerViewModel *dto.RegisterViewModel) (*dto.UserResponseDTO, error) {
 	var user = entity.User{
 		FirstName: registerViewModel.FirstName,
 		LastName:  registerViewModel.LastName,
@@ -80,9 +80,9 @@ func (userService *UserService) SaveUser(registerViewModel *dto.RegisterViewMode
 		return nil, err
 	}
 
-	var afterRegisterViewModel dto.UserViewModel
+	var afterRegisterViewModel dto.UserResponseDTO
 	if result != nil {
-		afterRegisterViewModel = dto.UserViewModel{
+		afterRegisterViewModel = dto.UserResponseDTO{
 			ID:       result.ID,
 			FullName: fmt.Sprintf("%s %s", result.FirstName, result.LastName),
 			Email:    result.Email,
@@ -91,19 +91,30 @@ func (userService *UserService) SaveUser(registerViewModel *dto.RegisterViewMode
 	return &afterRegisterViewModel, nil
 }
 
-func (userService *UserService) UpdateUser(user *entity.User) (*dto.UserViewModel, error) {
+func (userService *UserService) UpdateUser(userViewModel *dto.UserViewModel) (*dto.UserResponseDTO, error) {
+	var user = &entity.User{}
 	password, err := user.EncryptPassword(user.Password)
 	if err != nil {
 		return nil, err
 	}
-	user.Password = password
+	//user.Password = password
+	userViewModel.Password = password
+
+	//convert DTO to Entity
+	user.ID = userViewModel.ID
+	user.FirstName = userViewModel.FirstName
+	user.LastName = userViewModel.LastName
+	user.Email = userViewModel.Email
+	user.Password = userViewModel.Password
+
 	result, err := userService.userRepository.UpdateUser(user)
 	if err != nil {
 		return nil, err
 	}
 
-	var userAfterUpdate dto.UserViewModel
-	userAfterUpdate = dto.UserViewModel{
+	//var userAfterUpdate dto.UserViewModel
+	var userAfterUpdate dto.UserResponseDTO
+	userAfterUpdate = dto.UserResponseDTO{
 		ID:       result.ID,
 		FullName: fmt.Sprintf("%s %s", result.FirstName, result.LastName),
 		Email:    result.Email,

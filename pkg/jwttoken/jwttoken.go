@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type TokenDetail struct {
@@ -15,6 +16,24 @@ type TokenDetail struct {
 type AccessDetail struct {
 	UserID     int64
 	Authorized bool
+}
+
+func CreateToken(userid int64) (*TokenDetail, error) {
+	td := &TokenDetail{}
+	td.ExpiredToken = time.Now().Add(time.Minute * 15).Unix()
+	var err error
+	atClaims := jwt.MapClaims{}
+	atClaims["authorized"] = true
+	atClaims["user_id"] = userid
+	atClaims["exp"] = td.ExpiredToken
+
+	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
+	td.AccessToken, err = at.SignedString([]byte(viper.GetString("Jwt.Secret")))
+	if err != nil {
+		return nil, err
+	}
+
+	return td, nil
 }
 
 func ExtractToken(r *http.Request) string {

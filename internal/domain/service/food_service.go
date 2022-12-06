@@ -2,9 +2,9 @@ package service
 
 import (
 	"food-service/internal/domain/dto"
-	"food-service/internal/domain/entity"
 	"food-service/internal/domain/repository/repositoryInterfaces"
 	"food-service/internal/domain/service/serviceInterfaces"
+	"food-service/internal/domain/transformer"
 )
 
 type FoodService struct {
@@ -21,26 +21,15 @@ func NewFoodService(foodRepository repositoryInterfaces.IFoodRepository, userSer
 }
 
 func (foodService *FoodService) SaveFood(foodViewModel *dto.FoodViewModel) (*dto.FoodViewModel, error) {
-	var food = entity.Food{
-		UserID:      foodViewModel.UserID,
-		Title:       foodViewModel.Title,
-		Description: foodViewModel.Description,
-		FoodImage:   foodViewModel.FoodImage,
-	}
-
-	result, err := foodService.foodRepository.SaveFood(&food)
+	var food = transformer.FoodViewModelDTOToEntity(foodViewModel)
+	result, err := foodService.foodRepository.SaveFood(food)
 	if err != nil {
 		return nil, err
 	}
 	if result != nil {
-		foodViewModel = &dto.FoodViewModel{
-			ID:          result.ID,
-			UserID:      result.UserID,
-			Title:       result.Title,
-			Description: result.Description,
-			FoodImage:   result.FoodImage,
-		}
+		foodViewModel = transformer.FoodEntityToViewModelDTO(result)
 	}
+
 	return foodViewModel, nil
 }
 
@@ -52,13 +41,10 @@ func (foodService *FoodService) FindFoodById(id int) (*dto.FoodDetailViewModel, 
 
 	var foodVM dto.FoodDetailViewModel
 	if result != nil {
-		foodVM = dto.FoodDetailViewModel{
-			UserName:    foodService.userService.GetUserNameById(result.UserID),
-			Title:       result.Title,
-			FoodImage:   result.FoodImage,
-			Description: result.Description,
-		}
+		var username = foodService.userService.GetUserNameById(result.UserID)
+		foodVM = transformer.FoodEntityToDetailViewModelDTO(*result, username)
 	}
+
 	return &foodVM, nil
 }
 
@@ -71,29 +57,18 @@ func (foodService *FoodService) GetAllFood() ([]dto.FoodDetailViewModel, error) 
 	var foodListVM []dto.FoodDetailViewModel
 	if result != nil {
 		for _, item := range result {
-			foodVM := dto.FoodDetailViewModel{
-				UserName:    foodService.userService.GetUserNameById(item.UserID),
-				ID:          item.ID,
-				Title:       item.Title,
-				FoodImage:   item.FoodImage,
-				Description: item.Description,
-			}
-
+			var username = foodService.userService.GetUserNameById(item.UserID)
+			foodVM := transformer.FoodEntityToDetailViewModelDTO(item, username)
 			foodListVM = append(foodListVM, foodVM)
 		}
 	}
+
 	return foodListVM, nil
 }
 
 func (foodService *FoodService) UpdateFood(foodVM *dto.FoodViewModel) (*dto.FoodViewModel, error) {
-	var food = entity.Food{
-		ID:          foodVM.ID,
-		UserID:      foodVM.UserID,
-		Title:       foodVM.Title,
-		Description: foodVM.Description,
-		FoodImage:   foodVM.FoodImage,
-	}
-	_, err := foodService.foodRepository.UpdateFood(&food)
+	var food = transformer.FoodUpdateViewModelDTOToEntity(foodVM)
+	_, err := foodService.foodRepository.UpdateFood(food)
 	if err != nil {
 		return nil, err
 	}

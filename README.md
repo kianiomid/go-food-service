@@ -53,11 +53,6 @@ Below we describe the conventions or tools specific to golang project.
 └── README.me
 ```
 
-## Clone the project
-```
-$ docker build -t food-service . --target production
-$ cd go-food-service
-```
 ## Run the project
 ### 1. Build docker image
 ```

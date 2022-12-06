@@ -4,29 +4,17 @@ import (
 	"fmt"
 	"food-service/internal/domain/dto"
 	"food-service/internal/domain/entity"
-	"food-service/internal/domain/repository"
+	"food-service/internal/domain/repository/repositoryInterfaces"
 	"food-service/pkg/security"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type UserService struct {
-	userRepository repository.IUserRepository
+	userRepository repositoryInterfaces.IUserRepository
 }
 
-type IUserService interface {
-	SaveUser(model *dto.RegisterViewModel) (*dto.UserResponseDTO, error)
-	GetAllUser() (*[]dto.UserResponseDTO, error)
-	FindUserById(id int) (*dto.UserResponseDTO, error)
-	UpdateUser(userViewModel *dto.UserViewModel) (*dto.UserResponseDTO, error)
-	DeleteUserById(id int) error
-	GetUserByEmailPassword(loginViewModel dto.LoginViewModel) (*entity.User, error)
-}
-
-func NewUserService(userRepository repository.IUserRepository) *UserService {
-	//return &UserService{userRepository: userRepository}
-	var userService = UserService{}
-	userService.userRepository = userRepository
-	return &userService
+func NewUserService(userRepository repositoryInterfaces.IUserRepository) *UserService {
+	return &UserService{userRepository: userRepository}
 }
 
 func (userService *UserService) GetAllUser() (*[]dto.UserResponseDTO, error) {
@@ -129,6 +117,11 @@ func (userService *UserService) DeleteUserById(id int) error {
 	}
 
 	return nil
+}
+
+func (userService *UserService) GetUserNameById(id int) string {
+	var fullName = userService.userRepository.GetUserNameById(id)
+	return fullName
 }
 
 func (userService *UserService) GetUserByEmailPassword(loginViewModel dto.LoginViewModel) (*entity.User, error) {

@@ -11,16 +11,6 @@ type UserRepository struct {
 	db *gorm.DB
 }
 
-type IUserRepository interface {
-	SaveUser(*entity.User) (*entity.User, error)
-	FindUserById(int) (*entity.User, error)
-	GetAllUser() ([]entity.User, error)
-	UpdateUser(*entity.User) (*entity.User, error)
-	DeleteUserById(int) error
-	GetUserNameById(id int) string
-	GetUserByEmailPassword(loginViewModel dto.LoginViewModel) (*entity.User, error)
-}
-
 func NewUserRepository(db *gorm.DB) *UserRepository {
 	//return &UserRepository{db}
 	var userRepository = UserRepository{}
@@ -47,8 +37,8 @@ func (userRepository *UserRepository) FindUserById(id int) (*entity.User, error)
 
 func (userRepository *UserRepository) GetUserNameById(id int) string {
 	userDetail, _ := userRepository.FindUserById(id)
-	var fullname = fmt.Sprintf("%s %s", userDetail.FirstName, userDetail.LastName)
-	return fullname
+	var fullName = fmt.Sprintf("%s %s", userDetail.FirstName, userDetail.LastName)
+	return fullName
 }
 
 func (userRepository *UserRepository) GetAllUser() ([]entity.User, error) {

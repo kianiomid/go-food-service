@@ -1,4 +1,4 @@
-package interfaces
+package serviceInterfaces
 
 import "food-service/internal/domain/dto"
 

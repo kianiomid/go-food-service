@@ -1,4 +1,4 @@
-package interfaces
+package repositoryInterfaces
 
 import "food-service/internal/domain/entity"
 

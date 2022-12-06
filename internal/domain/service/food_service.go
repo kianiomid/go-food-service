@@ -3,17 +3,17 @@ package service
 import (
 	"food-service/internal/domain/dto"
 	"food-service/internal/domain/entity"
-	"food-service/internal/domain/repository"
-	"food-service/internal/domain/repository/interfaces"
+	"food-service/internal/domain/repository/repositoryInterfaces"
+	"food-service/internal/domain/service/serviceInterfaces"
 )
 
 type FoodService struct {
-	foodRepository interfaces.IFoodRepository
-	userRepository repository.IUserRepository
+	foodRepository repositoryInterfaces.IFoodRepository
+	userService    serviceInterfaces.IUserService
 }
 
-func NewFoodService(foodRepository interfaces.IFoodRepository, userRepository repository.IUserRepository) *FoodService {
-	return &FoodService{foodRepository: foodRepository, userRepository: userRepository}
+func NewFoodService(foodRepository repositoryInterfaces.IFoodRepository, userService serviceInterfaces.IUserService) *FoodService {
+	return &FoodService{foodRepository: foodRepository, userService: userService}
 	//var foodService = FoodService{}
 	//foodService.foodRepository = foodRepository
 	//foodService.userRepository = userRepository
@@ -53,7 +53,7 @@ func (foodService *FoodService) FindFoodById(id int) (*dto.FoodDetailViewModel, 
 	var foodVM dto.FoodDetailViewModel
 	if result != nil {
 		foodVM = dto.FoodDetailViewModel{
-			UserName:    foodService.userRepository.GetUserNameById(result.UserID),
+			UserName:    foodService.userService.GetUserNameById(result.UserID),
 			Title:       result.Title,
 			FoodImage:   result.FoodImage,
 			Description: result.Description,
@@ -72,7 +72,7 @@ func (foodService *FoodService) GetAllFood() ([]dto.FoodDetailViewModel, error) 
 	if result != nil {
 		for _, item := range result {
 			foodVM := dto.FoodDetailViewModel{
-				UserName:    foodService.userRepository.GetUserNameById(item.UserID),
+				UserName:    foodService.userService.GetUserNameById(item.UserID),
 				ID:          item.ID,
 				Title:       item.Title,
 				FoodImage:   item.FoodImage,

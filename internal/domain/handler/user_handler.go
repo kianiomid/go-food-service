@@ -5,7 +5,7 @@ import (
 	"food-service/internal/domain/dto"
 	"food-service/internal/domain/entity"
 	"food-service/internal/domain/rule"
-	"food-service/internal/domain/service"
+	"food-service/internal/domain/service/serviceInterfaces"
 	"food-service/pkg/jwttoken"
 	"food-service/pkg/response"
 	"github.com/gin-gonic/gin"
@@ -14,14 +14,11 @@ import (
 )
 
 type UserHandler struct {
-	userService service.IUserService
+	userService serviceInterfaces.IUserService
 }
 
-func NewUserHandler(userService service.IUserService) *UserHandler {
-	//return &UserHandler{userService: userService}
-	var userHandler = UserHandler{}
-	userHandler.userService = userService
-	return &userHandler
+func NewUserHandler(userService serviceInterfaces.IUserService) *UserHandler {
+	return &UserHandler{userService: userService}
 }
 
 func (userHandler *UserHandler) RegisterUser(c *gin.Context) {

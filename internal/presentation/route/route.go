@@ -29,7 +29,7 @@ func SetupRouter(db *gorm.DB) *gin.Engine {
 
 	//FoodHandler
 	foodRepository := repository.NewFoodRepository(db)
-	foodService := service.NewFoodService(foodRepository, userRepository)
+	foodService := service.NewFoodService(foodRepository, userService)
 	foodHandler := handler.NewFoodHandler(foodService)
 
 	food := router.Group("/v1/food")

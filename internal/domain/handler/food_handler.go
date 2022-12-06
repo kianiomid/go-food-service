@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"food-service/internal/domain/dto"
 	"food-service/internal/domain/rule"
-	"food-service/internal/domain/service/interfaces"
+	"food-service/internal/domain/service/serviceInterfaces"
 	"food-service/pkg/jwttoken"
 	"food-service/pkg/response"
 	"github.com/gin-gonic/gin"
@@ -15,10 +15,10 @@ import (
 )
 
 type FoodHandler struct {
-	foodService interfaces.IFoodService
+	foodService serviceInterfaces.IFoodService
 }
 
-func NewFoodHandler(foodService interfaces.IFoodService) *FoodHandler {
+func NewFoodHandler(foodService serviceInterfaces.IFoodService) *FoodHandler {
 	return &FoodHandler{foodService: foodService}
 	//var foodHandler = FoodHandler{}
 	//foodHandler.foodService = foodService

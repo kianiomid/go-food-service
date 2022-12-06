@@ -5,6 +5,7 @@ import (
 	"food-service/internal/domain/dto"
 	"food-service/internal/domain/entity"
 	"food-service/internal/domain/repository/repositoryInterfaces"
+	"food-service/internal/domain/transformer"
 	"food-service/pkg/security"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -25,45 +26,35 @@ func (userService *UserService) GetAllUser() (*[]dto.UserResponseDTO, error) {
 
 	var users []dto.UserResponseDTO
 	for _, item := range result {
-		var user dto.UserResponseDTO
-		user.ID = item.ID
-		user.FullName = fmt.Sprintf("%s %s", item.FirstName, item.LastName)
-		user.Email = item.Email
-		users = append(users, user)
+		var userResponseDTO = transformer.UserEntityToResponseDTO(item)
+		users = append(users, userResponseDTO)
 	}
+
 	return &users, nil
 }
 
 func (userService *UserService) FindUserById(id int) (*dto.UserResponseDTO, error) {
-	var viewModel dto.UserResponseDTO
+	var userResponseDTO dto.UserResponseDTO
 	result, err := userService.userRepository.FindUserById(id)
 	if err != nil {
 		return nil, err
 	}
 
 	if result != nil {
-		viewModel = dto.UserResponseDTO{
-			ID:       result.ID,
-			FullName: fmt.Sprintf("%s %s", result.FirstName, result.LastName),
-			Email:    result.Email,
-		}
+		userResponseDTO = transformer.UserEntityToResponseDTO(*result)
 	}
-	return &viewModel, nil
+	return &userResponseDTO, nil
 }
 
 func (userService *UserService) SaveUser(registerViewModel *dto.RegisterViewModel) (*dto.UserResponseDTO, error) {
-	var user = entity.User{
-		FirstName: registerViewModel.FirstName,
-		LastName:  registerViewModel.LastName,
-		Email:     registerViewModel.Email,
-	}
+	var user = transformer.UserRegisterViewModelDTOToEntity(registerViewModel)
 
 	password, err := user.EncryptPassword(registerViewModel.Password)
 	if err != nil {
 		return nil, err
 	}
 	user.Password = password
-	result, err := userService.userRepository.SaveUser(&user)
+	result, err := userService.userRepository.SaveUser(user)
 	if err != nil {
 		return nil, err
 	}
@@ -85,29 +76,18 @@ func (userService *UserService) UpdateUser(userViewModel *dto.UserViewModel) (*d
 	if err != nil {
 		return nil, err
 	}
-	//user.Password = password
+
 	userViewModel.Password = password
+	var userEntity = transformer.UserUpdateViewModelDTOToEntity(user, userViewModel)
 
-	//convert DTO to Entity
-	user.ID = userViewModel.ID
-	user.FirstName = userViewModel.FirstName
-	user.LastName = userViewModel.LastName
-	user.Email = userViewModel.Email
-	user.Password = userViewModel.Password
-
-	result, err := userService.userRepository.UpdateUser(user)
+	result, err := userService.userRepository.UpdateUser(userEntity)
 	if err != nil {
 		return nil, err
 	}
 
-	//var userAfterUpdate dto.UserViewModel
-	var userAfterUpdate dto.UserResponseDTO
-	userAfterUpdate = dto.UserResponseDTO{
-		ID:       result.ID,
-		FullName: fmt.Sprintf("%s %s", result.FirstName, result.LastName),
-		Email:    result.Email,
-	}
-	return &userAfterUpdate, err
+	var userResponseDTO = transformer.UserEntityToResponseDTO(*result)
+
+	return &userResponseDTO, err
 }
 
 func (userService *UserService) DeleteUserById(id int) error {

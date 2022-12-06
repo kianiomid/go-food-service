@@ -12,7 +12,6 @@ func FoodViewModelDTOToEntity(foodViewModel *dto.FoodViewModel) *entity.Food {
 		Description: foodViewModel.Description,
 		FoodImage:   foodViewModel.FoodImage,
 	}
-
 	return &food
 }
 
@@ -24,7 +23,6 @@ func FoodUpdateViewModelDTOToEntity(foodViewModel *dto.FoodViewModel) *entity.Fo
 		Description: foodViewModel.Description,
 		FoodImage:   foodViewModel.FoodImage,
 	}
-
 	return &food
 }
 

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"food-service/internal/domain/dto"
 	"food-service/internal/domain/rule"
-	"food-service/internal/domain/service"
+	"food-service/internal/domain/service/interfaces"
 	"food-service/pkg/jwttoken"
 	"food-service/pkg/response"
 	"github.com/gin-gonic/gin"
@@ -15,14 +15,14 @@ import (
 )
 
 type FoodHandler struct {
-	foodService service.IFoodService
+	foodService interfaces.IFoodService
 }
 
-func NewFoodHandler(foodService service.IFoodService) *FoodHandler {
-	//return &FoodHandler{foodService: foodService}
-	var foodHandler = FoodHandler{}
-	foodHandler.foodService = foodService
-	return &foodHandler
+func NewFoodHandler(foodService interfaces.IFoodService) *FoodHandler {
+	return &FoodHandler{foodService: foodService}
+	//var foodHandler = FoodHandler{}
+	//foodHandler.foodService = foodService
+	//return &foodHandler
 }
 func (foodHandler *FoodHandler) SaveFood(c *gin.Context) {
 	title := c.DefaultPostForm("title", "title")

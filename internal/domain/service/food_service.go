@@ -4,27 +4,20 @@ import (
 	"food-service/internal/domain/dto"
 	"food-service/internal/domain/entity"
 	"food-service/internal/domain/repository"
+	"food-service/internal/domain/repository/interfaces"
 )
 
 type FoodService struct {
-	foodRepository repository.IFoodRepository
+	foodRepository interfaces.IFoodRepository
 	userRepository repository.IUserRepository
 }
 
-type IFoodService interface {
-	SaveFood(*dto.FoodViewModel) (*dto.FoodViewModel, error)
-	FindFoodById(int) (*dto.FoodDetailViewModel, error)
-	GetAllFood() ([]dto.FoodDetailViewModel, error)
-	UpdateFood(*dto.FoodViewModel) (*dto.FoodViewModel, error)
-	DeleteFoodById(int) error
-}
-
-func NewFoodService(foodRepository repository.IFoodRepository, userRepository repository.IUserRepository) *FoodService {
-	//return &FoodService{foodRepository: foodRepository, userRepository: userRepository}
-	var foodService = FoodService{}
-	foodService.foodRepository = foodRepository
-	foodService.userRepository = userRepository
-	return &foodService
+func NewFoodService(foodRepository interfaces.IFoodRepository, userRepository repository.IUserRepository) *FoodService {
+	return &FoodService{foodRepository: foodRepository, userRepository: userRepository}
+	//var foodService = FoodService{}
+	//foodService.foodRepository = foodRepository
+	//foodService.userRepository = userRepository
+	//return &foodService
 }
 
 func (foodService *FoodService) SaveFood(foodViewModel *dto.FoodViewModel) (*dto.FoodViewModel, error) {

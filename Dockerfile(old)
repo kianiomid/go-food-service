@@ -1,0 +1,23 @@
+FROM golang:1.16-alpine as build
+
+RUN apk add --no-cache git
+WORKDIR /app/food
+
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
+COPY . .
+
+WORKDIR /app/food/cmd
+#RUN CGO_ENABLED=0 go test -v
+RUN go build -o ./out/food .
+
+# Start fresh from a smaller image
+FROM alpine:3.9
+
+#COPY --from=build /tmp/go-sample-app/out/go-sample-app /app/go-sample-app
+COPY --from=build /app/food/out/food /app/food
+EXPOSE 8091
+RUN chmod +x /app/food
+# Run the binary program produced by `go install`
+CMD ["/app/food"]

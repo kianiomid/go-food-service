@@ -9,19 +9,11 @@ type FoodRepository struct {
 	db *gorm.DB
 }
 
-type IFoodRepository interface {
-	SaveFood(*entity.Food) (*entity.Food, error)
-	FindFoodById(int) (*entity.Food, error)
-	GetAllFood() ([]entity.Food, error)
-	UpdateFood(*entity.Food) (*entity.Food, error)
-	DeleteFoodById(int) error
-}
-
 func NewFoodRepository(db *gorm.DB) *FoodRepository {
-	//return &FoodRepository{db}
-	var foodRepository = FoodRepository{}
-	foodRepository.db = db
-	return &foodRepository
+	return &FoodRepository{db}
+	//var foodRepository = FoodRepository{}
+	//foodRepository.db = db
+	//return &foodRepository
 }
 
 func (foodRepository *FoodRepository) SaveFood(food *entity.Food) (*entity.Food, error) {
